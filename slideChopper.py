@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """Usage: seqChopperSlide.py /path/to/fasta /path/to/chopped/fasta window_size slide_length
-example: python seqChopper.py myFasta.fasta myNewFasta.fasta 50 15"""
+example: python seqChopper.py myFasta.fasta myNewFasta.fasta 50 15
+Created by Kathryn Iverson kiverson@umich.edu"""
 
 import sys
 

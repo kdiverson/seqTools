@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 """Usage: seqChopper2.py /path/to/fasta /path/to/chopped/fasta window_size
-example: python seqChopper.py myFasta.fasta myNewFasta.fasta 50"""
+example: python seqChopper.py myFasta.fasta myNewFasta.fasta 50
+Created by Kathryn Iverson kiverson@umich.edu"""
 
 import sys
 
