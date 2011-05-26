@@ -1,1 +1,2 @@
 Some simple tools I've created to do mundane things. Maybe you'll find them usefull.
+You could probably use biopython to do many of the same things but I wanted sctipts that don't require any modules to be installed outside of good ol' python.
