@@ -1,6 +1,15 @@
 import sys
-"""Simple script to generate some simple states about a fasta file. I use it for contigs, but it will work with any fasta file"""
+"""Simple script to generate some simple states about a fasta file. I use it for contigs, but it will work with any fasta file
+Usage: python contigstats.py path/to/contigs.fa [y]
+if y is entered as an option then an output file called contigs_summary.tsv will be wtitten. It's a tsv file that lists the length of each conting and the same summary that's printed to the screen will be written at the bottom of the fille."""
 infile = open(sys.argv[1], 'r')
+
+try: 
+    if sys.argv[2]:
+        writeOutFile = True
+        outfile = open("contigs_summary.tsv", 'w')
+except IndexError:
+    writeOutFile = False
 
 def get_next_fasta (fileObject):
     '''usage: for header, seq in get_next_fasta(fileObject):
@@ -46,12 +55,20 @@ for header, seq in get_next_fasta(infile):
         longest = length
     if length < shortest:
         shortest = length
+    if writeOutFile:
+        outfile.write("%s\t%s\n" %(header,length))
 
 avgLen = totalLen/totalSeqs
+trimmedAvg = (totalLen-(longest+shortest))/(totalSeqs-2)
 
 print "total contigs:", totalSeqs
 print "average length:", avgLen, "bp"
+print "trimmed average length:", trimmedAvg, "bp"
 print "shortest conting:", shortest, "bp"
 print "longest contig:", longest, "bp"
 
 infile.close()
+
+if writeOutFile:
+    outfile.write("total contigs: %s\naverage length: %s\ntrimmed average length: %s\nshortest contig: %s\nlongest contig: %s" %(totalSeqs, avgLen, trimmedAvg, shortest, longest))
+    outfile.close()
