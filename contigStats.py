@@ -1,15 +1,6 @@
 import sys
-"""Simple script to generate some simple states about a fasta file. I use it for contigs, but it will work with any fasta file
-Usage: python contigstats.py path/to/contigs.fa [y]
-if y is entered as an option then an output file called contigs_summary.tsv will be wtitten. It's a tsv file that lists the length of each conting and the same summary that's printed to the screen will be written at the bottom of the fille."""
-infile = open(sys.argv[1], 'r')
 
-try: 
-    if sys.argv[2]:
-        writeOutFile = True
-        outfile = open("contigs_summary.tsv", 'w')
-except IndexError:
-    writeOutFile = False
+infile = open(sys.argv[1], 'r')
 
 def get_next_fasta (fileObject):
     '''usage: for header, seq in get_next_fasta(fileObject):
@@ -43,20 +34,37 @@ Code simplification contributed by Dattatreya Mellacheruvu
     if header:
         yield header, seq
 
+def sd(myList, avg):
+    tmp = []
+    for item in myList:
+        tmp.append((item - avg)**2)
+    SD = (float(sum(tmp))/len(tmp))**0.5
+    return SD
+    
+def median(s):
+    s= sorted(s)
+    i = len(s)
+    if not i%2:
+        return (s[(i/2)-1]+s[i/2])/2.0
+    return s[i/2]
+
 totalLen = 0
 totalSeqs = 0
 longest = 0
+tmpcount = 0
 shortest = 10000000000000000000000000000
+lengthlist = []
 for header, seq in get_next_fasta(infile):
     length = len(seq)
+    lengthlist.append(length)
     totalLen += length
     totalSeqs += 1
     if length > longest:
         longest = length
     if length < shortest:
         shortest = length
-    if writeOutFile:
-        outfile.write("%s\t%s\n" %(header,length))
+    if length >= 100:
+        tmpcount += 1
 
 avgLen = totalLen/totalSeqs
 trimmedAvg = (totalLen-(longest+shortest))/(totalSeqs-2)
@@ -64,11 +72,12 @@ trimmedAvg = (totalLen-(longest+shortest))/(totalSeqs-2)
 print "total contigs:", totalSeqs
 print "average length:", avgLen, "bp"
 print "trimmed average length:", trimmedAvg, "bp"
+#print "other avg: ", float(sum(lengthlist))/len(lengthlist)
+print "standard deviation: ", sd(lengthlist, avgLen)
+print "median: ", median(lengthlist)
+print "greater than or equal to 100: ", tmpcount
 print "shortest conting:", shortest, "bp"
 print "longest contig:", longest, "bp"
+print "total length:", totalLen/1000000.00, "Mb"
 
 infile.close()
-
-if writeOutFile:
-    outfile.write("total contigs: %s\naverage length: %s\ntrimmed average length: %s\nshortest contig: %s\nlongest contig: %s" %(totalSeqs, avgLen, trimmedAvg, shortest, longest))
-    outfile.close()

@@ -1,18 +1,13 @@
-#1/usr/bin/python
-'''usage: python removeShortContigs.py path/to/infile/ path/to/outfile/ cutoff'''
+#!/usr/bin/python
 import sys
 
-infasta = open(sys.argv[1], 'r')
-cutoff = int(sys.argv[3])
-outfasta = open(sys.argv[2], 'w')
+infile = open(sys.argv[1], 'r')
 
 def get_next_fasta (fileObject):
     '''usage: for header, seq in get_next_fasta(fileObject):
     '''
     header = ''
     seq = ''
-    #The following for loop gets the header of the first fasta
-    #record. Skips any leading junk in the file
     for line in fileObject:
         if line.startswith('>'):
             header = line.strip()
@@ -29,11 +24,19 @@ def get_next_fasta (fileObject):
     if header:
         yield header, seq
 
-for header, seq in get_next_fasta(infasta):
-    if len(seq) >= cutoff:
-        outfasta.write("%s\n%s\n" %(header, seq) )
-    else:
-        pass
+contigs = []
+total = 0
 
-infasta.close()
-outfasta.close()
+for header, seq in get_next_fasta(infile):
+   length = len(seq) 
+   contigs.append(length)
+   total += length
+
+halfTot = 0
+contigs.sort()
+
+for contig in contigs:
+    halfTot += contig
+    if halfTot>total/2:
+        print "N50:", contig
+        break

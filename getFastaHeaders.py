@@ -1,10 +1,7 @@
-#1/usr/bin/python
-'''usage: python removeShortContigs.py path/to/infile/ path/to/outfile/ cutoff'''
 import sys
 
 infasta = open(sys.argv[1], 'r')
-cutoff = int(sys.argv[3])
-outfasta = open(sys.argv[2], 'w')
+outfile = open(sys.argv[2], 'w')
 
 def get_next_fasta (fileObject):
     '''usage: for header, seq in get_next_fasta(fileObject):
@@ -30,10 +27,4 @@ def get_next_fasta (fileObject):
         yield header, seq
 
 for header, seq in get_next_fasta(infasta):
-    if len(seq) >= cutoff:
-        outfasta.write("%s\n%s\n" %(header, seq) )
-    else:
-        pass
-
-infasta.close()
-outfasta.close()
+    outfile.write(header[1:]+"\n")

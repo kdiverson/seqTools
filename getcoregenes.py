@@ -1,10 +1,13 @@
-#1/usr/bin/python
-'''usage: python removeShortContigs.py path/to/infile/ path/to/outfile/ cutoff'''
 import sys
 
-infasta = open(sys.argv[1], 'r')
-cutoff = int(sys.argv[3])
-outfasta = open(sys.argv[2], 'w')
+blastfile = open(sys.argv[1], 'r')
+earlyfasta = open(sys.argv[2], 'r')
+latefasta = open(sys.argv[3], 'r')
+earlycore = open(sys.argv[4], 'w')
+latecore = open(sys.argv[5], 'w')
+
+late = []
+early = []
 
 def get_next_fasta (fileObject):
     '''usage: for header, seq in get_next_fasta(fileObject):
@@ -29,11 +32,15 @@ def get_next_fasta (fileObject):
     if header:
         yield header, seq
 
-for header, seq in get_next_fasta(infasta):
-    if len(seq) >= cutoff:
-        outfasta.write("%s\n%s\n" %(header, seq) )
-    else:
-        pass
-
-infasta.close()
-outfasta.close()
+for line in blastfile:
+    line = line.split()
+    late.append(line[0])
+    early.append(line[1])
+    
+for header, seq in get_next_fasta(earlyfasta):
+    if header[1:].strip() in early:
+        earlycore.write("%s\n%s\n" % (header, seq))
+        
+for header, seq in get_next_fasta(latefasta):
+    if header[1:].strip() in late:
+        latecore.write("%s\n%s\n" % (header, seq))
